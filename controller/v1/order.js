@@ -134,10 +134,13 @@ class Order extends BaseComponent{
 			const orders = await OrderModel.find({user_id}).sort({id: -1}).limit(Number(limit)).skip(Number(offset));
 			const timeNow = new Date().getTime();
 			orders.map(item => {
-				if (timeNow - item.order_time < 900000) {
-					item.status_bar.title = '等待支付';
-				}else{
-					item.status_bar.title = '支付超时';
+				if (item.status_bar.title == '支付成功') {
+				}else {
+					if (timeNow - item.order_time < 900000) {
+						item.status_bar.title = '等待支付';
+					}else{
+						item.status_bar.title = '支付超时';
+					}
 				}
 				item.time_pass = Math.ceil((timeNow - item.order_time)/1000);
 				item.save()
@@ -196,7 +199,6 @@ class Order extends BaseComponent{
 			const timeNow = new Date().getTime();
 			orders.map(item => {
 				if (item.status_bar.title == '支付成功') {
-
 				}else {
 					if (timeNow - item.order_time < 900000) {
 						item.status_bar.title = '等待支付';
